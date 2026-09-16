@@ -151,6 +151,7 @@
         pilgrim: {
             tag: "Identity · Registration",
             title: "Pilgrim Registration & Identity",
+            img: "images/piligrame.jpg",
             summary: "Vision-assisted registration and identity verification integrated into a high-volume operational process.",
             business: "High-throughput registration where manual identity checks create queues and fatigue-related errors. The system had to speed up verification while staying integrated with existing operational steps.",
             cv: "Face capture in crowded, unconstrained conditions — varied pose, lighting, and distance. Verification is a one-to-many search that needs threshold tuning to control false accepts against false rejects.",
@@ -166,6 +167,7 @@
         transit: {
             tag: "Identity · Transit",
             title: "Transit Passenger Identity",
+            img: "images/Transit Passenger Identity.jpg",
             summary: "Passenger identity verification with biometric and card/RFID fallback paths for inconclusive matches.",
             business: "Confirming passenger identity and eligibility at transit points. A biometric-only path fails for a portion of passengers, so an alternate identity path (card / RFID / Aadhaar-style) must take over without breaking the flow.",
             cv: "Face recognition under varied capture conditions combined with reliable fallback selection. Inconclusive biometric matches must degrade gracefully instead of failing the passenger at the gate.",
@@ -196,6 +198,7 @@
         "sku-vit": {
             tag: "Research · Retail",
             title: "ViT-Based SKU Recognition",
+            img: "images/retail.jpg",
             summary: "Using transformer backbones and visual representations to separate visually similar products in a SKU-recognition proof of concept.",
             business: "Classic CNN classifiers and simple retrieval miss the distinctions between near-identical SKUs. The goal was to evaluate whether transformer-based representations separate these classes better.",
             cv: "Learning a robust embedding space where near-identical products are discriminable; transfer learning from large pretrained backbones with limited labeled retail data; and a sound evaluation setup.",
@@ -211,6 +214,7 @@
         gauge: {
             tag: "Industrial · Monitoring",
             title: "Analogue Gauge Reading",
+            img: "images/angole meter  reading.jpg",
             summary: "Automated detection and reading of analogue dials and industrial meters from field imagery.",
             business: "Manual periodic gauge reading is slow, hazard-prone in industrial areas, and error-prone. Automated reading enables remote, repeatable monitoring.",
             cv: "Locating gauges in cluttered scenes, then reading needle/dial geometry under glare, reflection, perspective, and small-marking conditions.",
@@ -226,6 +230,7 @@
         inspection: {
             tag: "Industrial · Quality",
             title: "Industrial Quality Inspection",
+            img: "images/quality_inspection.jpg",
             summary: "Automated visual QC for packaging, product defects, foreign particles, label/barcode integrity, and dimensions.",
             business: "Manual line inspection is inconsistent and cannot keep pace with production speed. Repeatable automated checks are needed for quality and conformance with clear pass/fail decisions.",
             cv: "Detecting subtle defects and inconsistencies at line speed, checking label/barcode presence and readability, and measuring dimensions — under varying conditions, with a hard FP/FN business trade-off (rejecting good vs passing bad).",
@@ -236,6 +241,102 @@
             contribution: ["Worked on inspection pipeline components", "Trained and evaluated detection and OCR modules", "Participated in integration with the client QC workflow"],
             tech: ["YOLO", "OCR", "OpenCV", "Python", "Docker"],
             results: "Developed and evaluated inspection components in a QC workflow context. Metrics available on request."
+        },
+
+        "glass-bottle": {
+            tag: "Bottling · Glass",
+            title: "Glass Bottle Inspection",
+            img: "images/glass_bottling.jpg",
+            summary: "360° glass bottle inspection for transparent-body defects and glass/foreign particles down to 0.5 mm.",
+            business: "Transparent bottle lines need inspection that human eyes miss — small glass shards, embedded particles, and subtle body defects — checked across the full 360° surface at line speed.",
+            cv: "Detecting sub-millimetre glass particles and foreign particles (black, opaque, red) on a clear, reflective surface, plus transparent-body defects like cut marks, mold, and blister.",
+            pipeline: ["Line / 360° Capture", "Frames + Views", "Glass Particle Detection", "Foreign-Particle Classification (black / opaque / red)", "Body Defect Checks (cut · mold · blister)", "Pass / Fail", "Reject · Log · API"],
+            approach: "Detection models tuned to catch 0.5 mm+ particles and body defects across multiple capture views, fused into a per-bottle pass/fail decision.",
+            dataset: "Real line imagery annotated for particle types, defect classes, and conforming samples.",
+            challenges: ["Sub-millimetre targets", "Reflections on glass", "Transparent-object contrast", "FP/FN trade-off per defect class"],
+            contribution: ["Worked on the particle and defect detection pipeline", "Participated in annotation, evaluation, and line integration", "Helped tune thresholds to the pass/fail business rule"],
+            tech: ["YOLO", "OpenCV", "Python", "Flask"],
+            results: "Line-trialed bottle inspection achieving ~90% accuracy. Numbers as reported from the field."
+        },
+
+        "pet-bottle": {
+            tag: "Bottling · PET",
+            title: "PET Bottle Inspection",
+            img: "images/pet_bottle.jpg",
+            summary: "360° PET bottle inspection with base foreign-particle detection (hair, resin, ants) down to 0.5 mm.",
+            business: "PET lines produce bottles fast, and base contamination (hair, resin, ants, particulates) reaches the consumer unless caught at speed. Inspection must cover the full bottle, including the base.",
+            cv: "Finding small foreign particles concentrated at the bottle base and across the body using 360° coverage, under the lighting/angle variability of a running line.",
+            pipeline: ["Line / 360° Capture", "Frames + Views", "Base ROI Extraction", "Foreign-Particle Detection", "Body Check", "Pass / Fail", "Reject · Log · API"],
+            approach: "Detection across 360° capture views with a focused base-inspection region, thresholded for the 0.5 mm minimum particle size.",
+            dataset: "Base and body imagery from the line covering hair, resin, ants, and other particulates.",
+            challenges: ["Small particles at the base", "Base geometry / shadowing", "View stitching and coverage", "Speed vs detection reliability"],
+            contribution: ["Worked on base foreign-particle detection", "Participated in dataset curation and evaluation", "Helped with line integration and threshold tuning"],
+            tech: ["YOLO", "OpenCV", "Python", "Flask"],
+            results: "Line-trialed PET inspection achieving ~90% accuracy. Numbers as reported from the field."
+        },
+
+        "gallon-bottle": {
+            tag: "Bottling · Bulk",
+            title: "5-Gallon Bottle Inspection",
+            img: "images/5g.jpg",
+            summary: "Full-body and base inspection for 5-gallon (19 L) bottles.",
+            business: "Large-format 5-gallon bottles return and refill, so repeated surface and base damage or contamination must be reliably rejected before filling.",
+            cv: "Inspecting the full body and base of large, semi-reflective containers for defects, scratches, and contamination across multiple views.",
+            pipeline: ["Container Capture", "Body Views", "Base View", "Defect / Contamination Detection", "Pass / Fail", "Reject · Log · API"],
+            approach: "Full-body plus base inspection using staged capture views and detection tuned to the 5-gallon container geometry.",
+            dataset: "Body/base imagery from return-and-refill lines annotated for damage and contamination.",
+            challenges: ["Large surface coverage", "Reflections and curvature", "Base inspection access", "Repeat-use damage patterns"],
+            contribution: ["Worked on the full-body and base inspection pipeline", "Participated in evaluation and threshold tuning"],
+            tech: ["YOLO", "OpenCV", "Python", "Flask"],
+            results: "Trialed on refill-line containers achieving ~90% accuracy. Numbers as reported from the field."
+        },
+
+        "box-count": {
+            tag: "Packaging · Live",
+            title: "Box Counting (Conveyor)",
+            img: "images/box_counting.jpg",
+            summary: "Live production deployment counting boxes on a moving conveyor — ~98% production accuracy.",
+            business: "A live packaging operation needed accurate box counts on a moving conveyor for production accounting, replacing manual tallies.",
+            cv: "Detecting and counting boxes as they move past the camera while occluded by each other and the conveyor, at production speed.",
+            pipeline: ["Conveyor Camera", "Box Detection", "Tracking / Counting", "Count Aggregation", "Reports / API"],
+            approach: "Detection plus tracking to count boxes once per pass, with end-to-end orchestration from data gathering to model deployment.",
+            dataset: "Production conveyor imagery curated and orchestrated end to end for the counting models.",
+            challenges: ["Overlapping boxes", "Motion and speed", "Counting reliability at line rate", "Deployment into the live workflow"],
+            contribution: ["End-to-end data orchestration — from gathering to model deployment", "Built and evaluated the counting model", "Deployed and tuned on the live conveyor"],
+            tech: ["YOLO", "OpenCV", "Python", "Flask"],
+            results: "Live production deployment with ~98% production accuracy. Numbers as reported from the field."
+        },
+
+        tissue: {
+            tag: "FMCG · Tissue",
+            title: "Tissue Inspection",
+            img: "images/tissue.jpg",
+            summary: "Visual inspection of tissue products for surface and production defects.",
+            business: "Tissue manufacturing needs consistent visual quality checks that keep up with line output and catch defects traditional QC misses.",
+            cv: "Detecting surface-level defects on low-contrast tissue material under variable lighting and high throughput.",
+            pipeline: ["Line Camera", "Roll / Sheet Frame", "Defect Detection", "Pass / Fail", "Reject · Log"],
+            approach: "Detection models trained to flag visible tissue defects against a low-contrast, near-white background.",
+            dataset: "Tissue-line imagery annotated for defect classes and conforming material.",
+            challenges: ["Low surface contrast", "Lighting consistency", "Defect subtlety", "Line throughput"],
+            contribution: ["Worked on the tissue defect detection pipeline", "Participated in dataset curation and evaluation"],
+            tech: ["YOLO", "Segmentation", "OpenCV", "Python"],
+            results: "Developed and evaluated the inspection pipeline. Metrics available on request."
+        },
+
+        biscuit: {
+            tag: "FMCG · Biscuit",
+            title: "Biscuit Inspection",
+            img: "images/biscuit.jpg",
+            summary: "Biscuit line inspection for broken pieces, burnt areas, and other visible defects.",
+            business: "Bakery lines need broken, burnt, or otherwise malformed biscuits rejected before packing while conforming product passes at speed.",
+            cv: "Distinguishing broken or burnt biscuits from conforming ones with varied shapes and bake tone, on a moving line.",
+            pipeline: ["Line Camera", "Biscuit Detection", "Defect Classification (broken · burnt · OK)", "Pass / Fail", "Reject · Log"],
+            approach: "Detection plus defect classification per biscuit, tuned to hold the reject/pass balance the line requires.",
+            dataset: "Bakery-line imagery covering broken, burnt, and conforming biscuits.",
+            challenges: ["Bake-tone variability", "Class imbalance", "Edge/broken appearance variance", "Line speed"],
+            contribution: ["Worked on detection and defect classification", "Participated in dataset curation and evaluation"],
+            tech: ["YOLO", "OpenCV", "Python"],
+            results: "Developed and evaluated the inspection pipeline. Metrics available on request."
         },
 
         /* ---------------- EXPERIMENTS & DEMOS ---------------- */
@@ -423,7 +524,7 @@
         var p = PROJECTS[id];
         if (!p) return;
 
-        /* Media: video for demos, banner for applied use cases */
+        /* Media: video for demos, real image or banner for applied use cases */
         if (p.video) {
             modalMedia.innerHTML =
                 '<video controls playsinline preload="metadata" poster="' +
@@ -431,6 +532,9 @@
                 '" aria-label="Project demo video">' +
                 '<source src="' + p.video.src + '" type="video/mp4">' +
                 "</video>";
+        } else if (p.img) {
+            modalMedia.innerHTML =
+                '<img src="' + p.img + '" alt="' + p.title + '" loading="lazy" decoding="async">';
         } else {
             modalMedia.innerHTML = svgBanner(p.title);
         }
