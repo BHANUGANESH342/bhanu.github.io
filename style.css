@@ -1478,6 +1478,12 @@ body::after {
     font-size: 0.95rem;
 }
 
+.m-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
 .m-pipe {
     list-style: none;
     padding: 0;

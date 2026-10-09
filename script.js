@@ -491,6 +491,24 @@
             contribution: "Built the gesture-to-game-control bridge.",
             tech: ["Python", "OpenCV", "MediaPipe"],
             results: "Playable prototype — see the demo video."
+        },
+
+        d10: {
+            tag: "Experiment · Tracking",
+            title: "Single Object Tracker",
+            summary: "A classical-CV tracker with a Flask web UI: draw a box, track the target, survive occlusion, and re-identify it when it returns.",
+            video: { src: "images/single_object_tracker_demo.mp4", poster: "images/single_object_tracker.jpg" },
+            demo: { url: "https://single-object-tracker.onrender.com", label: "Open live demo" },
+            link: { url: "https://github.com/BHANUGANESH342/tracking_single_object", label: "View source on GitHub" },
+            business: "A reusable tracking primitive for monitoring feeds: pick any object once and follow it, with an automatic event report when it is lost or returns.",
+            cv: "Single-object tracking (CSRT) fused with a Kalman motion model and optical-flow verification, plus multi-cue re-identification (colour, ORB, template, shape) to recover the same target after occlusion or exit.",
+            pipeline: ["Frame", "CSRT Tracker", "Kalman Prediction", "Optical-Flow Verify", "Confidence Scoring", "State Machine (Locked / Lost / Re-acquiring)", "Re-identification", "Annotated Video + JSON Report"],
+            approach: "Classical OpenCV only — no trained model or GPU. A CSRT tracker is blended with Kalman-predicted motion; an appearance confidence score (colour histogram, ORB, template match, shape) drives a state machine that locks, tolerates loss, and re-identifies the original target by ID.",
+            dataset: "No training data — evaluated on standard tracking clips and live camera input.",
+            challenges: ["Occlusion and target exit", "Illumination / exposure change", "Re-identifying the same object without mixing up similar ones", "Keeping the lock stable without a learned model"],
+            contribution: "Designed and built the full pipeline, the re-identification stack, the confidence/state machine, and the Flask dashboard with live streaming, run reports, and a hosted browser-camera mode.",
+            tech: ["Python", "OpenCV", "Flask", "NumPy", "Kalman Filter", "CSRT", "ORB"],
+            results: "Survives occlusion and re-identifies the target; verified end-to-end on a hosted browser-camera run that stayed locked for the full sequence."
         }
     };
 
@@ -575,13 +593,25 @@
 
         html += block("Results", "<p>" + p.results + "</p>");
 
-        if (p.link) {
-            html +=
-                '<div class="m-block"><a class="btn btn-ghost" href="' +
-                p.link.url +
-                '" target="_blank" rel="noopener">' +
-                p.link.label +
-                ' <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a></div>';
+        if (p.demo || p.link) {
+            var actions = "";
+            if (p.demo) {
+                actions +=
+                    '<a class="btn btn-primary" href="' +
+                    p.demo.url +
+                    '" target="_blank" rel="noopener">' +
+                    p.demo.label +
+                    ' <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a>';
+            }
+            if (p.link) {
+                actions +=
+                    '<a class="btn btn-ghost" href="' +
+                    p.link.url +
+                    '" target="_blank" rel="noopener">' +
+                    p.link.label +
+                    ' <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a>';
+            }
+            html += '<div class="m-block m-actions">' + actions + "</div>";
         }
 
         modalDetails.innerHTML = html;
